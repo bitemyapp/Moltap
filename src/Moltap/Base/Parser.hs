@@ -1,4 +1,7 @@
+{-# LANGUAGE FlexibleInstances, OverlappingInstances #-}
+{-# LANGUAGE TypeSynonymInstances #-}
 {-# OPTIONS_GHC -Wall -fno-warn-orphans #-}
+
 --------------------------------------------------------------------------------
 -- |
 -- Module      :  Moltap.Base.Parser

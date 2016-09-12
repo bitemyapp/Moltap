@@ -50,6 +50,13 @@ modWorlds = Map.keys . modValuation
 modIsWorld :: Ord w => w -> Model w -> Bool
 modIsWorld world mod = world `Map.member` modValuation mod
 
+-- Chris: this is bloody awful but is how the author wrote it
+failLookup :: (Monad m, Ord k) => k -> Map k a -> m a
+failLookup k m =
+  case Map.lookup k m of
+    Nothing -> fail "Could not find key!"
+    (Just v) -> return v
+
 --------------------------------------------------------------------------------
 -- Evaluation
 --------------------------------------------------------------------------------
@@ -78,13 +85,13 @@ instance Ord w => Models (Model w,w) where
     (m,w) |= Box  s a t = (m, if s then All ws else Any ws) |= t
         where ws = Set.fromList
                    [ w'
-                   | rel <- Map.lookup a (modRelations m)
+                   | rel <- failLookup a (modRelations m)
                    , w' <- Map.findWithDefault [] w rel
                    , modIsWorld w' m
                    ]
     (m,w) |= Star s a t = (if s then and else or)
                               [ (m,w') |= t
-                              | rel <- Map.lookup a (modRelations m)
+                              | rel <- failLookup a (modRelations m)
                               , w' <- Map.findWithDefault [] w (transClose True [w] rel)
                               , modIsWorld w' m -- only actually existing worlds
                               ]

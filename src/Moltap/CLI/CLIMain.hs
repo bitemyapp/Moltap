@@ -64,7 +64,8 @@ options =
 --------------------------------------------------------------------------------
 
 main :: IO ()
-main = main' `catch` print
+main =
+  main'
 
 main' :: IO ()
 main' = do

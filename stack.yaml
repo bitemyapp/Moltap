@@ -1,0 +1,9 @@
+resolver: lts-6.17
+packages:
+- '.'
+extra-deps:
+  - utf8-string-0.2
+
+flags: {}
+
+extra-package-dbs: []

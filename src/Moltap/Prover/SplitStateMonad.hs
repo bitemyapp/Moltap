@@ -46,6 +46,14 @@ instance Functor (SSM s e) where
     fmap f (Get        a) = Get (\s -> fmap f (a s))
     fmap f (Put      s a) = Put s (fmap f a)
 
+instance Applicative (SSM s e) where
+    pure = Return
+    Abort      e <*> _ = Abort e
+    Return     a <*> x = fmap a x
+    Split    a b <*> x = Split (a <*> x) (b <*> x)
+    Get        a <*> x = Get (\s -> a s <*> x)
+    Put      s a <*> x = Put s (a <*> x)
+
 instance Monad (SSM s e) where
     return = Return
     Abort      e >>= _ = Abort e
@@ -54,13 +62,9 @@ instance Monad (SSM s e) where
     Get        a >>= f = Get (\s -> a s >>= f)
     Put      s a >>= f = Put s (a >>= f)
 
-instance Applicative (SSM s e) where
-    pure = Return
-    Abort      e <*> _ = Abort e
-    Return     a <*> x = fmap a x
-    Split    a b <*> x = Split (a <*> x) (b <*> x)
-    Get        a <*> x = Get (\s -> a s <*> x)
-    Put      s a <*> x = Put s (a <*> x)
+instance Monoid e => Alternative (SSM s e) where
+    empty = Abort mempty
+    a <|> b = Split a b
 
 instance Monoid e => MonadPlus (SSM s e) where
     mzero = Abort mempty
