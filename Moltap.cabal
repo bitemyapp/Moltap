@@ -1,5 +1,5 @@
 name:                  Moltap
-version:               0.2
+version:               0.3
 cabal-version:         >= 1.2
 build-type:            Simple
 license:               GPL
